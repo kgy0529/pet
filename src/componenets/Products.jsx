@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios'
 import {Link} from "react-router-dom"
+import dayjs from 'dayjs';
+import isLeapYear from 'dayjs/plugin/isLeapYear'; // 윤년 판단 플러그인
+import 'dayjs/locale/ko'; // 한국어 가져오기
 
 
 const Products = () => {
     const [products, setProducts] = useState([])
 
     useEffect(()=>{
-        let url="https://de9f36ab-aded-4f7d-b0c7-8bcde54663f8.mock.pstmn.io/products"
+        let url="http://localhost:8000/products"
         axios.get(url).then((reseult)=>{
-            const products=reseult.data.products;
+            const products=reseult.data.product;
             setProducts(products);
         }).catch(error =>{
             console.log(error)
@@ -27,7 +30,7 @@ const Products = () => {
                 products.map((product, idx) =>{
                     return(
                         <div className="product-card" key={idx}>
-                            <Link className='product-link' to={`/productpage/${idx}`}>
+                            <Link className='product-link' to={`/productpage/${product.id}`}>
                                 <div>
                                 <img src={process.env.PUBLIC_URL + product.imageUrl} alt={product.name} />
                                 </div>
@@ -36,6 +39,7 @@ const Products = () => {
                                         <span className='product-seller'>({product.seller})</span>
                                         {product.name}</div>
                                     <div className="product-price">{product.price}</div>
+                                    <div className="product-date">{dayjs(product.createdAt).format('YYYY-MM-DD')}</div>
                                 </div>
     
                             </Link>
